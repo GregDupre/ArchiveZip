@@ -18,22 +18,25 @@ enum DELETE_MODE {
 
 		@Override
 		FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			ZipUtil.log("Deleting the file " + file.toAbsolutePath().toString());
 			Files.delete(file);
 			return FileVisitResult.CONTINUE;
 		}
 	},
-	ALL {
+	FILES_AND_FOLDERS {
 		@Override
-		FileVisitResult postVisitDirectory(Path folder, IOException error) throws IOException {
+		FileVisitResult postVisitDirectory(Path directory, IOException error) throws IOException {
 			if (error != null) {
 				throw error;
 			}
-			Files.delete(folder);
+			ZipUtil.log("Deleting the folder " + directory.toAbsolutePath().toString());
+			Files.delete(directory);
 			return FileVisitResult.CONTINUE;
 		}
 
 		@Override
 		FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			ZipUtil.log("Deleting the file " + file.toAbsolutePath().toString());
 			Files.delete(file);
 			return FileVisitResult.CONTINUE;
 		}
@@ -67,9 +70,11 @@ enum DELETE_MODE {
 
 	void process(Collection<Path> paths) throws IOException {
 		if (this == DELETE_MODE.DISABLED) {
+			ZipUtil.log("No deletion was triggered");
 			return;
 		}
 		for (Path path : paths) {
+			ZipUtil.log("FileWalk deletion starting from fodler " + path.toAbsolutePath());
 			Files.walkFileTree(path, visitor);
 		}
 	}
