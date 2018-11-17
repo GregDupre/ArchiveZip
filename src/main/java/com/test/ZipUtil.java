@@ -21,7 +21,7 @@ public class ZipUtil {
 		String zipName = "";
 		//
 		Optional<Path> archive = createArchive(zipPath, zipName, directories, DELETE_MODE.DISABLED);
-		
+
 	}
 
 	public static Optional<Path> createArchive(String zipPath, String zipName, Collection<String> directories, DELETE_MODE deletionMode) throws Exception {
@@ -29,10 +29,10 @@ public class ZipUtil {
 		if (validDirectories.isEmpty()) {
 			return Optional.empty();
 		}
-		
+
 		Path zip = Paths.get(zipPath, zipName);
 		Files.deleteIfExists(zip);
-		
+
 		try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
 			for (Path root : validDirectories) {
 				Consumer<Path> add = addNewEntry(root, out);
@@ -41,7 +41,7 @@ public class ZipUtil {
 		} catch (Exception e) {
 			throw e;
 		}
-		
+
 		deletionMode.process(validDirectories);
 		return Optional.of(zip);
 	}
